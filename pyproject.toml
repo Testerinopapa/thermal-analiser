@@ -3,7 +3,7 @@ name = "python-template"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "fastapi",
     "pillow",
@@ -1132,3 +1132,4 @@ yta-general-utils = [{ index = "pytorch-cpu", marker = "platform_system == 'Linu
 zensvi = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 zetascale = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 zuko = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
+ultralytics = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
