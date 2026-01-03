@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Wifi, WifiOff, RefreshCw } from "lucide-react";
 
 interface StatusIndicatorProps {
@@ -7,16 +7,23 @@ interface StatusIndicatorProps {
 
 type Status = "checking" | "online" | "offline";
 
+// Normalize URL to remove trailing slashes
+const normalizeUrl = (url: string): string => {
+  return url.trim().replace(/\/+$/, '');
+};
+
 export const StatusIndicator = ({ backendUrl }: StatusIndicatorProps) => {
   const [status, setStatus] = useState<Status>("checking");
   const [latency, setLatency] = useState<number | null>(null);
+  
+  const normalizedUrl = useMemo(() => normalizeUrl(backendUrl), [backendUrl]);
 
   const checkConnection = async () => {
     setStatus("checking");
     const startTime = Date.now();
     
     try {
-      const response = await fetch(backendUrl, {
+      const response = await fetch(normalizedUrl, {
         method: "GET",
         mode: "cors",
       });
@@ -39,7 +46,7 @@ export const StatusIndicator = ({ backendUrl }: StatusIndicatorProps) => {
     checkConnection();
     const interval = setInterval(checkConnection, 30000);
     return () => clearInterval(interval);
-  }, [backendUrl]);
+  }, [normalizedUrl]);
 
   return (
     <div className="terminal-panel p-4">
@@ -72,7 +79,7 @@ export const StatusIndicator = ({ backendUrl }: StatusIndicatorProps) => {
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-1 font-mono">
-              {backendUrl}
+              {normalizedUrl}
             </p>
           </div>
         </div>

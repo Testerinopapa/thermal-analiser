@@ -5,7 +5,20 @@ import { UploadZone } from "@/components/UploadZone";
 import { DebugPanel } from "@/components/DebugPanel";
 import { ImageOverlay } from "@/components/ImageOverlay";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://thermal-analyzer-backend.onrender.com";
+// Normalize backend URL: remove trailing slashes and ensure proper format
+const normalizeUrl = (url: string): string => {
+  return url.trim().replace(/\/+$/, '');
+};
+
+const BACKEND_URL = normalizeUrl(
+  import.meta.env.VITE_BACKEND_URL || "https://thermal-analyzer-backend.onrender.com"
+);
+
+// Helper function to construct API endpoints
+const getApiUrl = (path: string): string => {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${BACKEND_URL}${cleanPath}`;
+};
 
 interface AnalysisResponse {
   detections?: Array<{
@@ -39,7 +52,7 @@ const App = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/analyze`, {
+      const res = await fetch(getApiUrl('/analyze'), {
         method: "POST",
         body: formData,
       });
