@@ -1,0 +1,94 @@
+ThermoReport AI - Project Handoff
+Prepared for: Developer handoff | Date: January 03, 2026
+
+This document summarizes what the project is, the intended architecture, the current progress, and the main blocker so a developer can take over smoothly.
+
+1) What we are building
+
+A Lovable web app that creates professional, client-ready inspection reports from thermal (infrared) images.
+
+- User uploads a thermal image.
+- A CNN/computer vision service detects thermal anomalies and returns structured findings (boxes/labels/confidence/severity).
+- An LLM turns those findings into a polished report (engineering tone, clear recommendations, printable/shareable).
+
+2) Intended user flow (UX)
+
+1. Upload thermal image in Lovable UI.
+2. Frontend sends image to backend endpoint POST /analyze.
+3. Backend returns JSON detections (label, confidence, coordinates, severity).
+4. Lovable overlays bounding boxes on the image and lists anomalies.
+5. User clicks Generate Report.
+6. Lovable sends detection JSON into LLM with a strict system prompt.
+7. LLM returns a structured, professional report shown in a printable layout.
+
+3) Architecture decisions
+
+- Lovable: frontend UI and orchestration (upload, display overlays, call services).
+- LLM: called from Lovable (or via a Supabase function) to write the final report.
+- Python inference backend: required for CNN inference (Lovable cannot run heavy CNNs in-browser).
+- (Optional / later) Supabase Storage: store uploaded images and generated reports.
+
+4) Current implementation status
+
+A Replit Python project exists and can run a FastAPI server successfully inside the development workspace.
+
+- FastAPI app with GET / health check and POST /analyze.
+- Uses Ultralytics YOLOv8 as the initial inference framework (placeholder model).
+- Replit Agent was used to install dependencies and write/update main.py and run configuration.
+- Running shows Uvicorn logs and HTTP 200 responses for GET / inside the workspace.
+
+5) Main blocker: permanent deployment on Replit
+
+Replit deployment fails repeatedly due to dependency resolution issues for ultralytics (and its transitive dependencies) on the deployment environment.
+
+- Errors mention Linux aarch64/ARM architecture and uv/uv sync failing to resolve ultralytics.
+- Tried Python version changes (3.12 -> 3.11 -> 3.10), opencv-python-headless, deleting uv.lock, and relaxing markers in pyproject.toml, but deploy still fails.
+- Likely root cause: deployment target is ARM/aarch64 and compatible wheels (torch/ultralytics stack) are not available or not resolved by the package manager in that environment.
+
+6) What the developer should do next
+
+Goal: provide a permanent, stable HTTPS endpoint for POST /analyze that Lovable can call.
+
+Preferred approach (recommended): deploy on an x86_64 environment (Docker-friendly).
+
+- Deploy FastAPI inference service on Render, Railway, Fly.io, or any x86_64 Docker host.
+- Use Python 3.10/3.11 (CPU) and install ultralytics + torch reliably.
+- Expose HTTPS endpoint: https://<service>/analyze.
+
+Alternative options:
+- Keep Replit but switch to a deployment type/runtime that is x86_64 (if available).
+- Avoid ultralytics: export model to ONNX and run with onnxruntime (often simpler cross-platform).
+- Use hosted inference (e.g., Roboflow inference endpoint) and keep backend thin (forward + format JSON).
+
+7) Model research still pending
+
+We have not finalized the thermal model/weights. Target domains may include electrical inspection, solar panel defects, or machinery hotspots. Next step is selecting the domain(s), locating suitable pretrained weights, and defining the label taxonomy used in reports.
+
+8) Backend contract: what Lovable expects
+
+Endpoint:
+POST /analyze (multipart/form-data with one image file)
+
+Response JSON format:
+
+{
+  "analysis": [
+    {
+      "label": "Thermal Anomaly",
+      "confidence": 0.92,
+      "coordinates": [100, 100, 200, 200],
+      "severity": "High"
+    }
+  ]
+}
+
+Notes: coordinates should match the original image coordinate system. Later, we may add temperature metrics (delta-T, region stats) if radiometric data is available.
+
+9) After the backend is stable
+
+- Wire Lovable to upload images and call the permanent /analyze endpoint.
+- Render bounding box overlays + anomaly list in the UI.
+- Send the returned JSON into the LLM with a strict thermography/engineering system prompt.
+- Display the generated report in a clean, printable layout.
+
+Contact note: If you need the current Replit dev URL for testing, it can be provided, but it sleeps. The main requirement is a permanent endpoint.
