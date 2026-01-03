@@ -7,7 +7,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.11
-    plan: starter
+    plan: free
     healthCheckPath: /
     autoDeploy: true
 
