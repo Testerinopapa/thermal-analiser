@@ -31,7 +31,16 @@ async def analyze_image(file: UploadFile = File(...)):
     detections = []
     for result in results:
         for box in result.boxes:
-            coords = box.xyxy[0].tolist()
+            # YOLO returns [x1, y1, x2, y2] format
+            xyxy = box.xyxy[0].tolist()
+            x1, y1, x2, y2 = xyxy
+            
+            # Convert to [x, y, width, height] format for frontend
+            x = x1
+            y = y1
+            width = x2 - x1
+            height = y2 - y1
+            
             conf = float(box.conf)
             cls = int(box.cls)
             label = model.names[cls]
@@ -39,10 +48,15 @@ async def analyze_image(file: UploadFile = File(...)):
             detections.append({
                 "label": label,
                 "confidence": round(conf, 2),
-                "coordinates": coords,
+                "coordinates": [x, y, width, height],  # [x, y, width, height] format
                 "severity": "High" if conf > 0.8 else "Medium"
             })
-    return {"analysis": detections}
+    
+    # Return both 'detections' (for frontend) and 'analysis' (for backward compatibility)
+    return {
+        "detections": detections,
+        "analysis": detections  # Keep for backward compatibility
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=5000)
