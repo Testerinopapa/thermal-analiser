@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-01-03T10:05:41.640812",
+  "image_path": "000001.jpg",
+  "backend_url": "http://localhost:5000",
+  "analysis": {
+    "detections": [
+      {
+        "label": "person",
+        "confidence": 0.86,
+        "coordinates": [
+          111.70094299316406,
+          62.72472381591797,
+          65.27053833007812,
+          183.54920196533203
+        ],
+        "severity": "High"
+      }
+    ],
+    "analysis": [
+      {
+        "label": "person",
+        "confidence": 0.86,
+        "coordinates": [
+          111.70094299316406,
+          62.72472381591797,
+          65.27053833007812,
+          183.54920196533203
+        ],
+        "severity": "High"
+      }
+    ],
+    "image_info": {
+      "size": [
+        336,
+        256
+      ],
+      "mode": "RGB",
+      "format": "JPEG",
+      "width": 336,
+      "height": 256
+    },
+    "model_info": {
+      "model": "foduucom/thermal-image-object-detection",
+      "model_type": "YOLOv8 (thermal image object detection)",
+      "note": "This model is specifically trained for thermal/infrared image detection."
+    }
+  }
+}

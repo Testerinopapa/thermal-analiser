@@ -9,6 +9,7 @@ dependencies = [
     "pillow",
     "python-multipart",
     "ultralytics",
+    "ultralyticsplus",
     "uvicorn",
     "opencv-python-headless",
 ]
