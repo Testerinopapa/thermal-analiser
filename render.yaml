@@ -11,7 +11,7 @@ services:
     healthCheckPath: /
     autoDeploy: true
 
-  - type: static_site
+  - type: static
     name: thermal-analyzer-frontend
     buildCommand: cd FrontEnd && npm install && npm run build
     staticPublishPath: ./FrontEnd/dist
