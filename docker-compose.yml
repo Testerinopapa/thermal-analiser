@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./eb-deploy
+      dockerfile: Dockerfile
+    container_name: thermal-analyzer-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PRELOAD_MODELS=false
+      - MODEL_S3_BUCKET=thermal-analyzer-models-101764208674
+      - AWS_REGION=us-east-2
+      - CORS_DOMAINS=*
+    volumes:
+      # Mount storage for local development (models will be loaded from S3 in production)
+      - ./eb-deploy/storage:/app/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+

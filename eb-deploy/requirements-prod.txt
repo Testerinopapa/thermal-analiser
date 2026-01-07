@@ -1,0 +1,73 @@
+# Production requirements - minimal set for runtime
+# Pin setuptools to avoid numpy build issues with Python 3.7
+setuptools<60.0.0
+wheel
+# Pin importlib-metadata for Python 3.7 compatibility
+importlib-metadata<2.0.0,>=0.12; python_version < "3.8"
+
+# Core Flask dependencies
+Flask==1.1.2
+Flask-Cors==3.0.9
+Flask-RESTful==0.3.8
+Werkzeug==1.0.1
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+itsdangerous==1.1.0
+click==7.1.2
+
+# TensorFlow and ML dependencies
+tensorflow==2.3.1
+tensorflow-estimator==2.3.0
+numpy==1.18.5
+h5py==2.10.0
+Keras-Preprocessing==1.1.2
+gast==0.3.3
+google-pasta==0.2.0
+opt-einsum==3.3.0
+wrapt==1.12.1
+termcolor==1.1.0
+absl-py==0.11.0
+astunparse==1.6.3
+grpcio==1.33.2
+protobuf==3.13.0
+# tensorboard==2.3.0  # Removed to save space - not needed for inference
+# tensorboard-plugin-wit==1.7.0  # Removed to save space
+
+# Image processing
+opencv-python==4.4.0.46
+Pillow==8.0.1
+imageio==2.9.0
+scikit-image==0.16.2
+scipy==1.5.3
+matplotlib==3.3.2
+PyWavelets==1.1.1
+
+# AWS and utilities
+boto3>=1.26.0
+psutil>=5.8.0
+python-dotenv==0.12.0
+requests==2.24.0
+
+# Gunicorn for production server
+gunicorn==20.1.0
+
+# Supporting libraries
+six==1.15.0
+certifi==2020.6.20
+urllib3==1.25.11
+idna==2.10
+chardet==3.0.4
+pytz==2020.4
+python-dateutil==2.8.1
+packaging==20.4
+pyparsing==2.4.7
+cycler==0.10.0
+decorator==4.4.2
+kiwisolver==1.3.1
+networkx==2.5
+attrs==20.2.0
+jsonschema==3.2.0
+pyrsistent==0.14.11
+Markdown==3.3.3
+typing-extensions==3.7.4.3
+

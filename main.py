@@ -22,7 +22,7 @@ import cv2
 load_dotenv()
 
 # Configuration
-base_path = Path(".")
+base_path = Path(__file__).parent.resolve()  # Use absolute path based on script location
 storage_path = base_path.joinpath("storage")
 
 app = Flask(__name__)
@@ -83,10 +83,25 @@ class ModelManager:
             cls._configs_loaded = {}
             for key, config_path in cls.model_config.items():
                 try:
-                    with open(config_path) as f:
-                        cls._configs_loaded[key] = json.load(f)
-                except FileNotFoundError:
+                    # Resolve to absolute path for better error messages
+                    abs_path = Path(config_path).resolve()
+                    if not abs_path.exists():
+                        print(f"Warning: Config file not found: {abs_path}")
+                        print(f"  Expected at: {config_path}")
+                        cls._configs_loaded[key] = None
+                    else:
+                        with open(abs_path) as f:
+                            cls._configs_loaded[key] = json.load(f)
+                            print(f"✓ Loaded config: {key} from {abs_path}")
+                except FileNotFoundError as e:
                     print(f"Warning: Config file not found: {config_path}")
+                    print(f"  Error: {e}")
+                    cls._configs_loaded[key] = None
+                except json.JSONDecodeError as e:
+                    print(f"Error: Invalid JSON in config file {config_path}: {e}")
+                    cls._configs_loaded[key] = None
+                except Exception as e:
+                    print(f"Error loading config {key} from {config_path}: {e}")
                     cls._configs_loaded[key] = None
         return cls._configs_loaded
     

@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+*.log
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+README*
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Deployment artifacts
+*.zip
+.ebextensions/
+.ebignore
+
+# Model files (should be in S3, not in container)
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.pkl
+
+# Other
+.DS_Store
+*.jpg
+*.png
+*.jpeg
+
